@@ -1,0 +1,309 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#111b32"><title>競馬AI｜全券種・横断ポートフォリオ v3.3</title><style>
+:root{color-scheme:dark;--bg:#0b1222;--panel:#14213b;--panel2:#0c1830;--line:#314362;--txt:#edf3ff;--sub:#aebfdc;--blue:#2472d0;--good:#85e0b1;--bad:#eeacb3}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:0 0 55px;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Yu Gothic",Meiryo,sans-serif}header{position:sticky;top:0;z-index:5;background:#111c34;border-bottom:1px solid var(--line);padding:16px max(14px,calc((100vw - 860px)/2))}header strong{font-size:20px}header small{font-size:11px;color:#afc1df;margin-left:7px}.wrap{max-width:860px;margin:auto;padding:14px}section{background:var(--panel);border:1px solid #2b3c5b;border-radius:16px;padding:16px;margin:0 0 14px}h2{font-size:16px;margin:0 0 11px}p,.hint{font-size:13px;line-height:1.65;color:var(--sub);margin:7px 0 10px}.minor{font-size:12px;color:#9db0cb}.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0 0 14px}.tabs button{font-size:15px;padding:12px 4px}.tabs button.active{background:var(--blue);border-color:#72a8ee}button,.filebtn{border:1px solid #385178;border-radius:10px;padding:11px 14px;background:#24385c;color:#fff;font-size:14px;font-weight:650;cursor:pointer;display:inline-block}button.primary,.filebtn.primary{background:var(--blue);border-color:#4d97e6}button.warn{background:#512b35;border-color:#905163}button:hover,.filebtn:hover{filter:brightness(1.13)}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,th[tabindex]:focus-visible{outline:2px solid #a0d0ff;outline-offset:1px}button:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:11px 0}input[type=file]{display:none}input[type=text],select,textarea{background:#0d172b;color:var(--txt);border:1px solid #415476;border-radius:9px;padding:10px;font-size:14px}select{max-width:100%}textarea{display:block;width:100%;min-height:166px;resize:vertical;line-height:1.55;font-family:inherit}input[type=text].edit{width:88px;padding:7px 6px;text-align:right;font-size:13px;font-variant-numeric:tabular-nums}input[type=checkbox]{accent-color:var(--blue);width:16px;height:16px;vertical-align:middle}label{font-size:13px}.status{padding:10px 12px;background:var(--panel2);border:1px solid #304365;border-radius:9px;font-size:13px;line-height:1.6;white-space:pre-wrap;color:#c5d5ec}.status.err{color:#ffbfc1;border-color:#8a4253}.status.ok{color:#a2ebca}.scroll{overflow:auto;max-height:445px;border:1px solid #2d405e;border-radius:9px}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px;font-variant-numeric:tabular-nums}th,td{padding:9px 8px;border-bottom:1px solid #2d405e;text-align:right}th:first-child,td:first-child{text-align:left}th{position:sticky;top:0;background:#1b2c49;color:#c1d1e8;z-index:1;font-weight:650}th.sort{cursor:pointer;user-select:none}th.sort:hover{color:white;background:#274365}tr:hover td{background:#182a47}.num{text-align:right}.positive{color:var(--good);font-weight:700}.negative{color:var(--bad)}.muted{color:#95a8c7}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:9px 0}.summary span{padding:10px;background:#0e1930;border:1px solid #273a58;border-radius:9px;color:#b6c7e3;font-size:12px;min-width:0}.summary b{display:block;color:white;font-size:20px;margin-top:3px}.pill{display:inline-block;border:1px solid #527295;padding:3px 8px;border-radius:9px;font-size:12px}.tag{border:1px solid #506a8e;border-radius:5px;padding:1px 7px;font-weight:700}.tag.A{color:#9addba}.tag.B{color:#c2d6ff}.tag.C{color:#f4cc91}.tag.D{color:#adb5cb}.toolbar{display:flex;gap:11px;align-items:center;flex-wrap:wrap}.hide{display:none!important}.foot{max-width:860px;margin:auto;padding:0 14px;color:#91a5c2;font-size:12px;line-height:1.7}.divider{border-top:1px solid #354663;margin:12px 0}.sample{font-family:ui-monospace,monospace;color:#d5e3ff;background:#111d34;padding:2px 5px;border-radius:4px}.note{color:#f2d09c}.tiny{font-size:11px}.name{max-width:240px;overflow:hidden;text-overflow:ellipsis}.widebox{width:110px!important}@media(max-width:600px){.wrap{padding:9px}section{padding:13px;border-radius:13px}header{padding:13px}header strong{font-size:18px}.tabs{gap:5px}.tabs button{padding:12px 2px;font-size:14px}.actions button,.actions .filebtn{flex:1;text-align:center}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}th,td{padding:9px 7px}td.name{max-width:130px}}
+
+.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.tabs button{font-size:13px;padding:11px 3px}.evcheck{width:19px;height:19px}.stickyBasket{position:sticky;bottom:0;z-index:4;background:#162849;border-top:1px solid #4c6b91;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}.stickyBasket button{padding:9px 12px}.settings{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.settings input{width:105px;background:#0d172b;color:white;border:1px solid #415476;border-radius:7px;padding:8px}.selected{background:#203a45}.badgetiny{font-size:11px;color:#9ee9c5}.smallbtn{padding:5px 8px;font-size:12px}.inputAmt{width:88px!important}.tabs button.active{background:#2472d0}.basketAnchor{scroll-margin-top:95px}.sortcontrols{display:flex;flex-wrap:wrap;gap:8px}.sortcontrols select{max-width:180px}.status.ok{color:#a2ebca}@media(max-width:600px){.stickyBasket{padding:9px 10px}.tabs button{font-size:12px}.settings input{width:92px}}
+
+/* 読み取り後のオッズは閲覧専用。表はスマホで数値が判別しやすいように調整 */
+.oddsReadonly{font-weight:650;color:#f0f4ff;font-variant-numeric:tabular-nums}
+#evRows td{padding:12px 9px}
+#resultPanel .scroll{overflow-x:auto}
+#resultPanel table{min-width:580px}
+@media(max-width:600px){#evRows td{padding:11px 8px}#resultPanel table{min-width:565px}}
+/* 地方競馬版v25準拠の結果表示 */
+.resultPanel{margin-top:14px;padding:13px;border:1px solid #496785;border-radius:12px;background:#101e35}
+.resultPanel h3{font-size:15px;margin:4px 0 9px}.resultPanel .summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+.foldProb{border:1px solid #39516e;border-radius:10px;padding:8px 10px;margin:12px 0;background:#0d1a30}
+.foldProb summary{cursor:pointer;font-weight:700;font-size:13px;padding:5px 0}
+.compositePanel{background:#0d1b32;border:1px solid #405779;border-radius:12px;margin-top:15px;padding:13px}
+.compRow{background:#132943}.hideresults{display:none!important}.badgeCount{color:#94f3c0;font-size:13px;font-weight:700}
+@media(max-width:600px){.resultPanel .summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v3.3: 狭いスマホでは結果を2行のコンパクトカードに変換。横スクロール不要。 */
+@media (max-width: 640px) {
+ .evResultScroll {overflow-x:hidden!important;overflow-y:auto;max-width:100%;}
+ .evResultTable {display:block;width:100%!important;min-width:0!important;border-collapse:separate;white-space:normal;table-layout:auto;}
+ .evResultTable thead {display:none;}
+ .evResultTable tbody {display:block;min-width:0;width:100%;}
+ .evResultTable tbody tr {display:grid;grid-template-columns:32px minmax(0,1.05fr) minmax(0,1fr) minmax(0,1.15fr);grid-template-areas:"select pair pair ev" "select probability odds profit";align-items:center;column-gap:5px;row-gap:6px;padding:10px 8px;border-bottom:1px solid #405372;min-width:0;}
+ .evResultTable tbody td {display:block;min-width:0;width:auto!important;max-width:100%;border:0;padding:0!important;font-size:clamp(11px,3.1vw,14px);overflow:visible;text-align:right;white-space:nowrap;line-height:1.3;}
+ .evResultTable tbody td:nth-child(1){grid-area:select;text-align:center;align-self:center;}
+ .evResultTable tbody td:nth-child(2){grid-area:pair;text-align:left;font-size:clamp(15px,4vw,18px);font-weight:750;}
+ .evResultTable tbody td:nth-child(3){grid-area:probability;text-align:left;}
+ .evResultTable tbody td:nth-child(4){grid-area:odds;text-align:center;}
+ .evResultTable tbody td:nth-child(5){grid-area:ev;text-align:right;font-size:clamp(14px,3.8vw,18px);font-weight:800;}
+ .evResultTable tbody td:nth-child(6){grid-area:profit;text-align:right;}
+ .evResultTable tbody td:nth-child(7){display:none;}
+ .evResultTable tbody td:nth-child(3)::before {content:'的中 ';color:#9eb2d0;font-size:10px;}
+ .evResultTable tbody td:nth-child(4)::before {content:'倍率 ';color:#9eb2d0;font-size:10px;}
+ .evResultTable tbody td:nth-child(5)::before {content:'EV ';color:#bbd2e8;font-size:10px;font-weight:600;}
+ .evResultTable tbody td:nth-child(6)::before {content:'損益 ';color:#9eb2d0;font-size:10px;font-weight:600;}
+ .evResultTable .evcheck {height:20px;width:20px;margin:0;}
+ .evResultTable tbody tr.selected {background:#203a45;}
+}
+@media (max-width:360px){
+ .evResultTable tbody tr{grid-template-columns:26px minmax(0,1.05fr) minmax(0,1fr) minmax(0,1.1fr);padding:8px 5px;column-gap:3px;}
+ .evResultTable tbody td{font-size:10.5px;letter-spacing:-.25px;}
+ .evResultTable tbody td:nth-child(2){font-size:14px;}
+ .evResultTable tbody td:nth-child(5){font-size:13px;}
+ .evResultTable tbody td:nth-child(3)::before,.evResultTable tbody td:nth-child(4)::before,.evResultTable tbody td:nth-child(6)::before {font-size:9px;}
+}
+</style></head><body><header><strong>競馬AI 全券種分析</strong><small>CSV勝率読込・買い目横断保存 v3.3</small></header><main class="wrap">
+<section><h2>① AI単勝勝率 CSV読み込み</h2><p>元のJRA版のCSV解析を継承。複数レースCSV、UTF-8 / Shift_JIS対応。枠連分析には「枠番」列が必要です。</p><div class="actions"><label class="filebtn primary" for="csvFile">CSVを読み込む</label><input id="csvFile" type="file" accept=".csv,.txt,text/csv"><button id="demoBtn">サンプルデータ</button><button id="backupBtn">全データをバックアップ</button><label class="filebtn" for="restoreFile">バックアップを復元</label><input id="restoreFile" type="file" accept=".json"><button class="warn" id="resetBtn">保存内容を全消去</button></div><div class="actions"><label for="raceSelect">分析レース</label><select id="raceSelect"><option>CSVを読み込んでください</option></select></div><div id="csvStatus" class="status">CSVを読み込んでください。選んだ買い目は券種を切り替えても残ります。</div></section>
+<section id="horsesSection" class="hide"><h2>② 出走馬・確率の確認</h2><div class="summary" id="horseStats"></div><div class="scroll" style="max-height:180px"><table><thead><tr><th>馬番</th><th>枠</th><th>馬名</th><th>元勝率</th><th>正規化後</th></tr></thead><tbody id="horseRows"></tbody></table></div><div id="consistencyStatus" class="status"></div></section>
+<section id="analysisSection" class="hide"><h2>③ 券種を選択して期待値を計算</h2><nav class="tabs" id="tabs"><button data-mode="win">単勝</button><button data-mode="place">複勝</button><button data-mode="bracket">枠連</button><button data-mode="umaren" class="active">馬連</button><button data-mode="umatan">馬単</button><button data-mode="wide">ワイド</button><button data-mode="trio">三連複</button><button data-mode="trifecta">三連単</button></nav>
+<div class="summary" id="probStats"></div><div class="status" id="modeStatus"></div><p id="oddsHelp"></p><textarea id="oddsInput" spellcheck="false" placeholder="組み合わせ　オッズ　人気&#10;1-3 5.6 1&#10;1-7 12.4 2"></textarea><div class="actions"><button class="primary" id="importSavedJraOdds" type="button">JRA保存オッズを取得</button><button class="primary" id="parseOddsBtn">オッズを読み取る</button><button id="clearOddsBtn">この券種のオッズを消去</button><button id="evCsvBtn">全期待値CSV</button></div><div class="status" id="oddsStatus">オッズを貼り付けてください。</div>
+<div id="resultPanel" class="resultPanel hideresults"><h3>④ <span id="evModeName">馬連</span> 期待値結果</h3>
+<div class="summary" id="evSummary"></div>
+<details class="foldProb" id="probFold"><summary>的中確率・損益分岐一覧を開く／閉じる</summary><p>全組み合わせを的中確率が高い順に表示。オッズ未取得でも計算した確率は確認できます。</p><div class="scroll" style="max-height:270px"><table><thead><tr><th>買い目</th><th>的中率</th><th>損益分岐</th></tr></thead><tbody id="probDetailRows"></tbody></table></div></details>
+<div class="actions"><button id="selectPositive" class="primary">プラス期待値を全選択</button><button id="selectClear">この券種の選択解除</button><button id="jumpSaved">蓄積一覧へ</button></div>
+<div class="settings" style="margin-top:12px"><label><input type="checkbox" id="positiveOnly" checked> EV100%超のみ</label><label>並び順 <select id="sortSelect"><option value="p">的中率順</option><option value="ev">期待回収率順</option><option value="pair">馬番順</option></select></label><label>候補を絞る <select id="filterSelect"><option value="all">全区分</option><option value="A">A：120〜150%</option><option value="B">B：115〜120%</option><option value="C">C：150%以上</option><option value="D">D：その他</option></select></label></div>
+<div class="scroll evResultScroll" style="max-height:520px;margin-top:12px"><table class="evResultTable"><thead><tr><th>追加</th><th>買い目</th><th>的中率</th><th>オッズ</th><th>期待回収率</th><th>期待損益/100円</th><th>区分</th></tr></thead><tbody id="evRows"></tbody></table></div><p>オッズは読み取り結果を表示します（この一覧で編集しません）。損益は100円購入時の期待利益で、的中時の利益ではありません。ワイド・複勝の幅オッズは下限で計算。買い目のチェックは券種を切り替えても残ります。</p>
+<div class="compositePanel"><h3>⑤ 選択した買い目の合成分析（現在の券種）</h3><p>地方競馬版と同じく、逆オッズ比例で払戻を揃えた場合の理論値です。複数的中する券種は着順同時確率で正しく評価します。実際の購入金額とは別計算です。</p><div class="summary" id="compositeSummary"></div><div id="compositeStatus" class="status">買い目を選択してください。</div><div class="scroll" style="max-height:230px;margin-top:9px"><table><thead><tr><th>買い目</th><th>的中率</th><th>オッズ</th><th>払戻割合（理論）</th></tr></thead><tbody id="compositeRows"></tbody></table></div></div>
+</div></section>
+<section id="basketSection" class="hide basketAnchor"><h2>⑥ 全券種の購入候補リスト <span id="basketCount" class="badgetiny"></span></h2><p>券種をまたいで合計し、各買い目の金額を100円単位で指定できます。買い目を追加しただけでは実際の購入は行われません。</p><div class="settings"><label>参考運用資金（円） <input id="bankroll" type="number" min="100" step="100" value="100000"></label><label>一括入力（円） <input id="batchAmt" type="number" min="0" step="100" value="100"></label><button id="applyBatch">候補すべてに適用</button><button id="basketCsvBtn">候補CSV</button><button class="warn" id="clearBasket">このレースの候補を全解除</button></div><div class="summary" id="basketStats"></div><div class="scroll" style="max-height:460px"><table><thead><tr><th>削除</th><th>券種</th><th>買い目</th><th>的中率</th><th>オッズ</th><th>EV</th><th>金額（円）</th></tr></thead><tbody id="basketRows"></tbody></table></div><h2 style="margin-top:15px">⑦ 同時的中・資金リスク分析</h2><div class="summary" id="riskStats"></div><div class="status" id="riskStatus"></div><div class="actions"><button id="riskRecalc">リスクを再計算</button></div></section>
+</main><div class="foot">Benter補正Harville：α=0.81、β=0.65。通常の3着払い・同着なしを仮定。枠連はCSVの枠番データが必要。入力のAI勝率は未較正。1レース上限1%、1点上限0.5%を警告表示します（自動購入額最適化は未搭載）。CSV・オッズ・買い目は端末のブラウザ内で処理。別端末へはJSONバックアップで移行してください。</div><div id="bottomBar" class="stickyBasket hide"><span id="bottomText">0点を候補に保存</span><button class="primary" id="gotoBasket">購入候補を見る</button></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const NAMES={win:'単勝',place:'複勝',bracket:'枠連',umaren:'馬連',umatan:'馬単',wide:'ワイド',trio:'三連複',trifecta:'三連単'};
+const MODES=Object.keys(NAMES),STORE='jra_ai_all_modes_v2';
+const state={races:[],raceIndex:0,mode:'umaren',model:null,tickets:{},perRace:{},sourceName:'',positive:true,sort:'p',filter:'all'};
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function sum(a){return a.reduce((x,y)=>x+y,0);}
+function status(id,msg,error=false,success=false){let e=$(id);e.className='status'+(error?' err':success?' ok':'');e.textContent=msg;}
+function csvCells(text){const rows=[];let row=[],v='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(q&&text[i+1]==='"'){v+='"';i++;}else q=!q;}else if(!q&&(c===','||c==='\t'||c==='，')){row.push(v.trim());v='';}else if(!q&&(c==='\n'||c==='\r')){if(c==='\r'&&text[i+1]==='\n')i++;row.push(v.trim());if(row.some(z=>z!==''))rows.push(row);row=[];v='';}else v+=c;}if(q)throw Error('CSVの引用符が閉じていません');row.push(v.trim());if(row.some(z=>z!==''))rows.push(row);return rows;}
+function canon(v){return String(v??'').normalize('NFKC').toLowerCase().replace(/[\s_　()（）・/%％]/g,'');}
+function col(head,names){return head.findIndex(c=>names.some(n=>canon(c)===canon(n)));}
+function parseCSV(text){const rows=csvCells(text.replace(/^\uFEFF/,''));if(!rows.length)throw Error('CSVが空です。');const first=rows[0];
+ const hasHeader=first.some(c=>/馬番|馬名|勝率|確率|race|horse|prob|競馬場|開催|レース|馬番号/i.test(c));
+ const head=hasHeader?first:[];const ix={num:col(head,['馬番','馬番号','umaban','horse_number','horseno','number','num']),name:col(head,['馬名','horsename','horse_name','name','horse']),p:col(head,['勝率','AI勝率','AI単勝勝率','単勝勝率','1着率','単勝確率','予測勝率','予想勝率','winprob','win_probability','winrate','probability','prob']),track:col(head,['競馬場','場名','開催','開催場','track','venue','場所']),race:col(head,['レース','レース番号','競走番号','R','race','race_number','raceNo','raceno']),date:col(head,['日付','開催日','年月日','date','race_date']),title:col(head,['レース名','競走名','race_name','racename'])};
+ if(hasHeader&&(ix.num<0||ix.p<0))throw Error('「馬番」と「勝率」の列を特定できませんでした。CSV見出しを確認してください。');
+ const grouped=new Map(),invalid=[];for(let i=hasHeader?1:0;i<rows.length;i++){
+  const a=rows[i],noStr=hasHeader?a[ix.num]:a[0],pStr=hasHeader?a[ix.p]:a[a.length-1];
+  const no=Number(String(noStr??'').normalize('NFKC').replace(/番$/,'').trim());const pval=String(pStr??'').normalize('NFKC').replace(/[%％]/g,'').replace(/,/g,'').trim();const p=Number(pval);
+  if(!Number.isInteger(no)||no<1||no>30||!pval||!Number.isFinite(p)||p<0){invalid.push(i+1);continue;}
+  const name=hasHeader&&ix.name>=0?String(a[ix.name]||`馬${no}`):a.length>2?a.slice(1,-1).join(' '):`馬${no}`;
+  const track=ix.track>=0?String(a[ix.track]||'').trim():'',race=ix.race>=0?String(a[ix.race]||'').trim():'',date=ix.date>=0?String(a[ix.date]||'').trim():'',title=ix.title>=0?String(a[ix.title]||'').trim():'';
+  const key=JSON.stringify([date,track,race,title]);if(!grouped.has(key))grouped.set(key,{date,track,race,title,horses:[]});grouped.get(key).horses.push({num:no,name,pRaw:p,percentMark:/[%％]/.test(String(pStr??''))});
+ }
+ if(invalid.length)throw Error(`数値を読み取れない行があります：${invalid.slice(0,10).join('、')}行目${invalid.length>10?' ほか':''}。推測を避け計算を停止しました。`);
+ const races=[...grouped.values()];if(!races.length)throw Error('出走馬が見つかりません。');
+ for(const r of races){if(r.horses.length<3)throw Error('3頭未満のレースがあります。CSVのレース列を確認してください。');if(r.horses.length>24)throw Error('同一レースの頭数が24頭を超えています。レース識別列が欠損していないか確認してください。');if(new Set(r.horses.map(h=>h.num)).size!==r.horses.length)throw Error('同じレースの馬番が重複しています。レース番号・開催場を確認してください。');
+  const total=sum(r.horses.map(h=>h.pRaw));if(!(total>0))throw Error('単勝勝率の合計が0です。');const marked=r.horses.some(h=>h.percentMark);if(marked&&total<=1.5)throw Error('パーセント表記の勝率合計が小さすぎます。単位を確認してください。');
+  const fraction=!marked&&total>=0.5&&total<=1.5&&r.horses.every(h=>h.pRaw<=1);r.inputUnit=fraction?'小数（0～1）':'%';r.inputTotal=fraction?total*100:total;
+  r.horses.sort((a,b)=>a.num-b.num);r.horses=r.horses.map(h=>({...h,p:h.pRaw/total,shownRaw:fraction?h.pRaw*100:h.pRaw}));r.label=[r.date,r.track,r.race?(/R$/i.test(r.race)?r.race:r.race+'R'):'',r.title].filter(Boolean).join(' / ')||'単独レース';
+  if(r.horses.filter(h=>h.p>0).length<3)throw Error('勝率が0より大きい馬が3頭未満です。');
+ }
+ if(races.length===1&&!races[0].track&&!races[0].race&&races[0].horses.length>18)throw Error('18頭超の単独レースを検出しました。レース識別列を確認してください。');
+ return races;
+}
+async function readCSVFile(file){const buf=await file.arrayBuffer();let txt;try{txt=new TextDecoder('utf-8',{fatal:true}).decode(buf);}catch{txt=new TextDecoder('shift_jis').decode(buf);}return txt;}
+function parseOddsValue(s){let text=String(s??'').normalize('NFKC').trim().replace(/[〜～~−‐‑‒–—－]/g,'-').replace(/,/g,'');let v=text.match(/^(\d+(?:\.\d+)?)(?:\s*-\s*(\d+(?:\.\d+)?))?(?=$|\s|[|])/);if(!v)return null;const lo=Number(v[1]),hi=v[2]!==undefined?Number(v[2]):lo;if(!Number.isFinite(lo)||lo<1||!Number.isFinite(hi)||hi<lo)return null;return {lo,hi};}
+function numFromTicket(raw,mode,horses){let nums;if(/[\-→>]/.test(raw)){nums=raw.split(/\s*(?:-|→|>)\s*/).map(Number);}else{const code=raw,expected=(mode==='trio'||mode==='trifecta')?3:(mode==='win'||mode==='place')?1:2,opts=horses.map(h=>h.num),solutions=[];function rec(cur,s){if(cur.length===expected){if(s===code)solutions.push(cur);return;}for(const v of opts){if(cur.includes(v))continue;const trial=s+v;if(!code.startsWith(trial))continue;if(mode!=='umatan'&&mode!=='trifecta'&&cur.length&&v<=cur[cur.length-1])continue;rec([...cur,v],trial);}}rec([],'');if(solutions.length!==1)return {error:solutions.length?'馬番の区切りが曖昧です':'該当する馬番がありません'};nums=solutions[0];}
+ const n=(mode==='trio'||mode==='trifecta')?3:(mode==='win'||mode==='place')?1:2;if(nums.length!==n||nums.some(x=>!Number.isInteger(x)||!horses.some(h=>h.num===x))||new Set(nums).size!==n)return {error:'馬番・頭数が一致しません'};
+ if(mode!=='umatan'&&mode!=='trifecta')nums.sort((a,b)=>a-b);return {key:nums.join('-')};}
+function cleanLine(line){return line.normalize('NFKC').replace(/[−‐‑‒–—－]/g,'-').replace(/[⇒➡➜]/g,'→').replace(/[〜～]/g,'~').replace(/^[\s*•]+/,'').replace(/^[-]\s+/,'').replace(/^\|(.+)\|$/,'$1').replace(/\|/g,' ').trim();}
+function extractCombo(line,mode){const t=line.replace(/^\s*[「『\[]/,'').trim();let m=t.match(/^(\d{1,2}(?:\s*(?:-|→|>)\s*\d{1,2}){1,2})(?=\s|$|[|:：])/);if(m){return {raw:m[1].replace(/\s/g,''),rest:t.slice(m[0].length).trim()};}
+ m=t.match(/^(\d{2,6})(?=\s|$|[|:：])/);if(m)return {raw:m[1],rest:t.slice(m[0].length).trim()};return null;}
+function extractContext(text){const t=text.normalize('NFKC');let match=t.match(/(?:^|\n)\s*#*\s*(馬連|ワイド|馬単|3連複|三連複)オッズ(?:\(|\s|$)/);if(!match)match=t.match(/(?:^|\n)\s*(馬連|ワイド|馬単|3連複|三連複)\s*オッズ\s*(?:\n|$)/);const type=match?match[1].replace('3連複','三連複'):null;
+ const loc=t.match(/\d+回\s*(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)\s*\d+日/);const race=t.match(/(?:^|\n)\s*(\d{1,2})\s*レース(?=\s|$)/m);return {type,location:loc?.[1]||null,race:race?Number(race[1]):null};}
+function parseJRAOdds(text,mode,r){const lines=text.split(/\r?\n/).map(cleanLine),warnings=[],out=new Map();const c=extractContext(text);if(c.type&&c.type!==NAMES[mode])throw Error(`貼り付け内容は「${c.type}オッズ」のようです。現在は「${NAMES[mode]}」タブです。`);
+ if(c.location&&r.track&&!String(r.track).includes(c.location))throw Error(`貼り付けは${c.location}、選択レースは${r.track}です。違うレースのオッズを混在させないでください。`);if(c.race!==null&&r.race&&Number(String(r.race).match(/\d+/)?.[0])!==c.race)throw Error(`貼り付けは${c.race}レース、選択中は${r.race}です。レースを確認してください。`);
+ for(let i=0;i<lines.length;i++){const s=lines[i];if(!s||/^(組合せ|組み合わせ|馬番|人気|オッズ|順位|組番|式別|表示範囲)$/.test(s))continue;
+  const c=extractCombo(s,mode);if(!c)continue;const parsed=numFromTicket(c.raw,mode,r.horses);if(parsed.error){if(c.rest.match(/^\d+(?:\.\d+)?/))warnings.push(`${i+1}行目「${s.slice(0,28)}」：${parsed.error}`);continue;}
+  let source=c.rest,next=0;let odd=parseOddsValue(source);
+  if(!odd){for(let k=1;k<=2&&i+k<lines.length;k++){const nxt=lines[i+k];if(!nxt||/^\d+(?:\.\d+)?(?:\s*[-~]\s*\d+(?:\.\d+)?)?$/.test(nxt)===false)break;const x=parseOddsValue(nxt);if(x){odd=x;next=k;break;}}}
+  if(!odd){if(source||i+1<lines.length&&/^[\d.]+/.test(lines[i+1]))warnings.push(`${i+1}行目「${s.slice(0,30)}」：オッズを読めません`);continue;}
+  if(out.has(parsed.key)){const old=out.get(parsed.key);if(Math.abs(old.lo-odd.lo)>1e-8||Math.abs(old.hi-odd.hi)>1e-8)warnings.push(`${i+1}行目「${parsed.key}」：異なるオッズが重複しています`);continue;}
+  out.set(parsed.key,odd);if(next>0)i+=next;
+ }
+ if(!out.size)throw Error('組合せ・オッズを読み取れませんでした。JRAの「組合せ・オッズ」欄を含めてコピーするか「1-3 5.6」の形式で貼り付けてください。');
+ if(warnings.length)throw Error(`誤読の可能性があるため反映を中止しました。\n${warnings.slice(0,6).join('\n')}${warnings.length>6?`\nほか${warnings.length-6}件`:''}`);
+ return out;}
+
+// end preserved CSV and JRA odds parser
+function initRaceRecord(){return {odds:Object.fromEntries(MODES.map(m=>[m,{}])),texts:Object.fromEntries(MODES.map(m=>[m,''])),chosen:{},amount:{}};}
+function raceKey(r){return JSON.stringify([r.date,r.track,r.race,r.title,r.horses.map(h=>[h.num,h.pRaw,h.frame||''])]);}
+function record(){const r=state.races[state.raceIndex];if(!r)return null;const k=raceKey(r);if(!state.perRace[k])state.perRace[k]=initRaceRecord();return state.perRace[k];}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({perRace:state.perRace,bankroll:$('bankroll').value}));}catch(e){status('csvStatus','ブラウザの保存領域が利用できません。JSONバックアップを保存してください。',true);}}
+function loadStored(){try{const d=JSON.parse(localStorage.getItem(STORE)||'{}');if(d.perRace&&typeof d.perRace==='object')state.perRace=d.perRace;if(d.bankroll)$('bankroll').value=d.bankroll;}catch{}}
+function key2(a,b){return [a,b].sort((x,y)=>x-y).join('-');}
+function key3(a,b,c){return [a,b,c].sort((x,y)=>x-y).join('-');}
+function ticketKey(m,k){return m+':'+k;}
+function add(map,k,p){map.set(k,(map.get(k)||0)+p);}
+function buildModel(r){const h=r.horses,n=h.length,p=h.map(x=>x.p),pa=p.map(v=>v**.81),pb=p.map(v=>v**.65),sa=sum(pa),sb=sum(pb);const maps=Object.fromEntries(MODES.map(m=>[m,new Map()]));const states=[],place=new Array(n).fill(0);let total=0;
+ const frames=h.map(x=>x.frame);const hasFrames=frames.every(x=>Number.isInteger(x)&&x>=1&&x<=8);
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++){if(j===i)continue;const d2=sa-pa[i];if(!(d2>0))continue;for(let k=0;k<n;k++){if(k===i||k===j)continue;const d3=sb-pb[i]-pb[j];if(!(d3>0))continue;const v=p[i]*pa[j]/d2*pb[k]/d3;if(!Number.isFinite(v)||v<0)throw Error('着順確率が不正です');total+=v;place[i]+=v;place[j]+=v;place[k]+=v;
+ const a=h[i].num,b=h[j].num,c=h[k].num;
+ add(maps.win,String(a),v);for(const x of [a,b,c])add(maps.place,String(x),v);
+ if(hasFrames)add(maps.bracket,key2(frames[i],frames[j]),v);
+ add(maps.umaren,key2(a,b),v);add(maps.umatan,a+'-'+b,v);
+ for(const pair of [key2(a,b),key2(a,c),key2(b,c)])add(maps.wide,pair,v);
+ add(maps.trio,key3(a,b,c),v);add(maps.trifecta,[a,b,c].join('-'),v);
+ states.push({i,j,k,v,a,b,c,fa:frames[i],fb:frames[j]});
+ }}
+ const target={win:1,place:3,bracket:hasFrames?1:0,umaren:1,umatan:1,wide:3,trio:1,trifecta:1};let err=Math.max(Math.abs(total-1),Math.abs(sum(place)-3));for(const m of MODES){err=Math.max(err,Math.abs(sum([...maps[m].values()])-target[m]));}
+ for(let i=0;i<n;i++){let ws=0;for(const [key,v] of maps.wide){if(key.split('-').includes(String(h[i].num)))ws+=v;}err=Math.max(err,Math.abs(ws-2*place[i]));for(let j=i+1;j<n;j++){const w=maps.wide.get(key2(h[i].num,h[j].num))||0;err=Math.max(err,Math.max(0,Math.max(0,place[i]+place[j]-1)-w,w-Math.min(place[i],place[j])));}}
+ if(err>1e-8)throw Error('確率整合性エラー '+err);return {maps,states,place,err,target,hasFrames};}
+function makeTickets(r,model){return Object.fromEntries(MODES.map(m=>[m,[...model.maps[m]].map(([key,p])=>({key,ids:key.split('-').map(Number),p}))]));}
+function readOdd(m,key){const obj=record()?.odds?.[m]?.[key];return obj&&Number.isFinite(obj.lo)?obj:null;}
+function displayKey(m,key){return m==='umatan'||m==='trifecta'?key.replace(/-/g,'→'):key;}
+function curRows(){return (state.tickets[state.mode]||[]).map(t=>{const o=readOdd(state.mode,t.key);const odd=o?.lo??null,hi=o?.hi??null;const ev=odd===null?null:t.p*odd*100;return {...t,odd,hi,ev,breakEven:t.p>0?1/t.p:Infinity,cat:ev===null?'—':ev>=150?'C':ev>=120?'A':ev>=115?'B':'D'};});}
+function setPanels(show){['horsesSection','analysisSection','basketSection','bottomBar'].forEach(x=>$(x).classList.toggle('hide',!show));}
+function fillRaceSelect(){const sel=$('raceSelect');sel.disabled=!state.races.length;sel.innerHTML=state.races.map((r,i)=>`<option value="${i}">${esc(r.label)}（${r.horses.length}頭）</option>`).join('')||'<option>CSVを読み込んでください</option>';sel.value=state.raceIndex;}
+function prepareRace(){if(!state.races.length){state.model=null;setPanels(false);return;}const r=state.races[state.raceIndex];try{state.model=buildModel(r);state.tickets=makeTickets(r,state.model);}catch(e){state.model=null;setPanels(false);status('csvStatus',e.message,true);return;}setPanels(true);record();$('horseStats').innerHTML=[['頭数',r.horses.length+'頭'],['AI勝率合計',fmt(r.inputTotal,3)+'%'],['補正後','100.000%'],['枠連',state.model.hasFrames?'解析可能':'枠番未入力']].map(([a,b])=>`<span>${a}<b>${b}</b></span>`).join('');$('horseRows').innerHTML=r.horses.map(h=>`<tr><td>${h.num}</td><td>${h.frame||'—'}</td><td class="name">${esc(h.name)}</td><td>${fmt(h.shownRaw,3)}%</td><td>${fmt(h.p*100,3)}%</td></tr>`).join('');status('consistencyStatus',`確率検算 OK / 最大誤差 ${state.model.err.toExponential(3)}（許容1e-8）。単勝・馬連・馬単・三連複・三連単100%、複勝・ワイド300%。${state.model.hasFrames?'枠連100%。':'枠連は枠番未入力のため対象外。'}`,false,true);$('oddsInput').value=record().texts[state.mode]||'';renderAll();}
+function loadCSV(text,name='CSV'){try{state.races=parseCSV(text);state.sourceName=name;state.raceIndex=0;fillRaceSelect();prepareRace();status('csvStatus',`${name} / ${state.races.length}レース、${sum(state.races.map(r=>r.horses.length))}頭を読み込みました。レースごとのオッズ・買い目を保存します。`,false,true);}catch(e){state.races=[];state.model=null;fillRaceSelect();setPanels(false);status('csvStatus',e.message,true);}}
+function isWinning(m,key,s){switch(m){case'win':return String(s.a)===key;case'place':return [s.a,s.b,s.c].includes(Number(key));case'bracket':return key2(s.fa,s.fb)===key;case'umaren':return key2(s.a,s.b)===key;case'umatan':return s.a+'-'+s.b===key;case'wide':return [key2(s.a,s.b),key2(s.a,s.c),key2(s.b,s.c)].includes(key);case'trio':return key3(s.a,s.b,s.c)===key;case'trifecta':return [s.a,s.b,s.c].join('-')===key;}return false;}
+function renderComposite(){
+ const m=state.mode,rec=record(),items=curRows().filter(t=>rec.chosen[ticketKey(m,t.key)]&&t.odd!==null&&t.odd>=1);
+ const box=$('compositeSummary'),body=$('compositeRows');
+ const stat=(label,value)=>`<span>${esc(label)}<b>${esc(value)}</b></span>`;
+ if(!items.length){box.innerHTML=stat('選択数','0点');body.innerHTML='';status('compositeStatus','現在の券種の期待値結果から買い目にチェックを付けてください。');return;}
+ const inv=sum(items.map(t=>1/t.odd)),odds=1/inv;
+ const shares=new Map(items.map(t=>[t.key,(1/t.odd)/inv]));
+ let union=0,multi=0,profit=0,expected=0,conditional=0;
+ for(const s of state.model.states){let n=0,payout=0;for(const t of items){if(isWinning(m,t.key,s)){n++;payout+=shares.get(t.key)*t.odd;}}if(n){union+=s.v;expected+=s.v*payout;}if(n>1)multi+=s.v;if(payout>1+1e-10)profit+=s.v;}
+ conditional=union>0?expected/union:0;
+ box.innerHTML=[['選択数',items.length+'点'],['1点以上的中',fmt(union*100,3)+'%'],['合成オッズ（1点的中）',fmt(odds,3)+'倍'],['合成期待回収率',fmt(expected*100,2)+'%'],['的中時平均払戻',fmt(conditional,3)+'倍'],['利益発生確率',fmt(profit*100,3)+'%'],['複数的中確率',fmt(multi*100,3)+'%']].map(x=>stat(...x)).join('');
+ body.innerHTML=items.slice().sort((a,b)=>b.p-a.p).map(t=>`<tr><td>${esc(displayKey(m,t.key))}</td><td>${fmt(t.p*100,3)}%</td><td>${fmt(t.odd,2)}倍</td><td>${fmt(shares.get(t.key)*100,2)}%</td></tr>`).join('');
+ status('compositeStatus','合成分析完了。各点の購入比率をオッズの逆数から計算。複勝・ワイドなどは同時的中を考慮しています。',false,true);
+}
+function renderV25Result(){
+ const rows=curRows(),got=rows.filter(x=>x.odd!==null),plus=got.filter(x=>x.ev>100);
+ $('resultPanel').classList.toggle('hideresults',!got.length);
+ $('evModeName').textContent=NAMES[state.mode];
+ $('evSummary').innerHTML=[['取得オッズ',got.length+' / '+rows.length],['EV100%超',plus.length+'点'],['A／B／C',got.filter(x=>x.cat==='A').length+' / '+got.filter(x=>x.cat==='B').length+' / '+got.filter(x=>x.cat==='C').length],['最高EV',got.length?fmt(Math.max(...got.map(x=>x.ev)),1)+'%':'—']].map(([a,b])=>`<span>${esc(a)}<b>${esc(b)}</b></span>`).join('');
+ if($('probFold').open){$('probDetailRows').innerHTML=rows.slice().sort((a,b)=>b.p-a.p).map(t=>`<tr><td>${esc(displayKey(state.mode,t.key))}</td><td>${fmt(t.p*100,4)}%</td><td>${fmt(t.breakEven,2)}倍</td></tr>`).join('');}
+ renderComposite();
+}
+function renderMode(){const m=state.mode,r=state.races[state.raceIndex],t=state.tickets[m]||[];document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));$('probStats').innerHTML=[['券種',NAMES[m]],['組み合わせ',t.length+'点'],['確率合計',fmt(sum(t.map(x=>x.p))*100,5)+'%'],['オッズ取得',Object.keys(record().odds[m]||{}).length+'点']].map(([a,b])=>`<span>${a}<b>${b}</b></span>`).join('');const unavailable=m==='bracket'&&!state.model.hasFrames;status('modeStatus',unavailable?'枠連は枠番列のあるCSVを読み込むと利用できます。':`${NAMES[m]}の確率を着順分布から計算済み。オッズが未取得ならEVは算出しません。`,unavailable,!unavailable);$('parseOddsBtn').disabled=unavailable;$('oddsInput').disabled=unavailable;
+ $('oddsHelp').textContent=m==='win'||m==='place'?`${NAMES[m]}：例「1 5.6」「2 2.0-2.6」。1組ずつのオッズを入力。`:m==='trifecta'?'三連単：例「1-3-7 32.5」または「1→3→7 32.5」。着順を区別します。':m==='bracket'?'枠連：例「1-3 5.6」。枠番で組み合わせを指定。':m==='wide'?'ワイド：例「1-3 3.1-3.8」。下限オッズで期待値判定。':m==='trio'?'三連複：例「1-3-7 32.5」。JRAの連結馬番にも対応。':`${NAMES[m]}：例「1-3 5.6」。JRAコピーの組合せとオッズを貼付。`;
+ const candidates=curRows().filter(x=>(!state.positive||x.ev!==null&&x.ev>100)&&(state.filter==='all'||x.cat===state.filter));candidates.sort((a,b)=>state.sort==='pair'?a.ids.join('-').localeCompare(b.ids.join('-'),undefined,{numeric:true}):(b[state.sort==='p'?'p':'ev']??-1)-(a[state.sort==='p'?'p':'ev']??-1)||b.p-a.p);
+ const chosen=record().chosen;$('evRows').innerHTML=candidates.map(t=>{const k=ticketKey(m,t.key),v=t.odd===null?'':t.hi>t.odd?`${fmt(t.odd,1)}-${fmt(t.hi,1)}`:fmt(t.odd,1);return `<tr class="${chosen[k]?'selected':''}"><td><input type="checkbox" class="evcheck" data-check="${esc(t.key)}" ${chosen[k]?'checked':''} ${t.odd===null?'disabled':''}></td><td>${displayKey(m,t.key)}</td><td>${fmt(t.p*100,3)}%</td><td class="oddsReadonly">${v?esc(v):'—'}</td><td class="${t.ev>100?'positive':t.ev===null?'muted':'negative'}">${t.ev===null?'—':fmt(t.ev,1)+'%'}</td><td class="${t.ev>100?'positive':t.ev===null?'muted':'negative'}">${t.ev===null?'—':(t.ev>100?'+':'')+fmt(t.ev-100,1)+'円'}</td><td>${t.cat}</td></tr>`;}).join('');renderV25Result();}
+function basketTickets(){const rec=record();if(!rec)return[];const out=[];for(const id of Object.keys(rec.chosen)){if(!rec.chosen[id])continue;const sep=id.indexOf(':'),m=id.slice(0,sep),key=id.slice(sep+1);const t=state.model.maps[m]?.get(key),o=readOdd(m,key);if(t===undefined||!o)continue;out.push({id,m,key,p:t,odds:o.lo,hi:o.hi,amt:Number(rec.amount[id]||0)});}return out;}
+function renderBasket(){const rec=record();if(!rec)return;const entries=basketTickets();$('basketCount').textContent=entries.length+'点';$('bottomText').textContent=entries.length+'点を候補に保存';$('basketRows').innerHTML=entries.length?entries.map(t=>`<tr><td><button class="smallbtn warn" data-remove="${esc(t.id)}">×</button></td><td>${NAMES[t.m]}</td><td>${displayKey(t.m,t.key)}</td><td>${fmt(t.p*100,3)}%</td><td>${fmt(t.odds,1)}</td><td class="${t.p*t.odds>1?'positive':'negative'}">${fmt(t.p*t.odds*100,1)}%</td><td><input class="edit inputAmt" type="number" min="0" step="100" data-amt="${esc(t.id)}" value="${t.amt}"></td></tr>`).join(''):'<tr><td colspan="7" class="muted">期待値一覧の左端にチェックを付けると、ここに買い目が残ります。</td></tr>';
+ const total=sum(entries.map(x=>x.amt)),expected=sum(entries.map(x=>x.amt*x.p*x.odds)),bank=Number($('bankroll').value),valid=Number.isFinite(bank)&&bank>0;const bad=entries.some(x=>x.amt<0||x.amt%100!==0||x.amt>bank*.005)||total>bank*.01;
+ $('basketStats').innerHTML=[['購入候補',entries.length+'点'],['投入額',total.toLocaleString('ja-JP')+'円'],['期待利益',fmt(expected-total,1)+'円'],['期待回収率',total>0?fmt(expected/total*100,1)+'%':'—']].map(([a,b])=>`<span>${a}<b>${b}</b></span>`).join('');
+ if(!entries.length||!total){$('riskStats').innerHTML='';status('riskStatus','金額が100円以上の候補を指定すると、全着順から損益分布を計算します。');return;}
+ const stats=riskStats(entries,bank,total);$('riskStats').innerHTML=[['1点以上的中率',fmt(stats.any*100,2)+'%'],['収支プラス確率',fmt(stats.profit*100,2)+'%'],['複数的中率',fmt(stats.multi*100,2)+'%'],['払戻標準偏差',fmt(stats.sd,0)+'円'],['全候補不的中',fmt((1-stats.any)*100,2)+'%'],['期待対数成長率',stats.logGrowth===null?'—':fmt(stats.logGrowth*100,5)+'%'],['最大損失',fmt(stats.maxLoss,0)+'円'],['投入比率',valid?fmt(total/bank*100,3)+'%':'—']].map(([a,b])=>`<span>${a}<b>${b}</b></span>`).join('');status('riskStatus',(bad?'⚠ 資金制約を超えた候補があります（1レース1%、1点0.5%、100円単位）。\n':'')+(!valid?'運用資金が不正です。\n':'')+`期待払戻 ${fmt(stats.mean,1)}円 ／ 期待利益 ${fmt(stats.mean-total,1)}円。\n払戻オッズは現在値・ワイド等は下限。確率は未較正。`,bad||!valid,!bad&&valid);
+}
+function riskStats(tickets,bank,total){let any=0,profit=0,multi=0,mean=0,m2=0,logGrowth=0,maxLoss=0,validLog=Number.isFinite(bank)&&bank>0;const active=tickets.filter(x=>x.amt>0);for(const s of state.model.states){let hits=0,payout=0;for(const t of active){const k=t.key;let win=false;switch(t.m){case'win':win=String(s.a)===k;break;case'place':win=[s.a,s.b,s.c].includes(Number(k));break;case'bracket':win=key2(s.fa,s.fb)===k;break;case'umaren':win=key2(s.a,s.b)===k;break;case'umatan':win=s.a+'-'+s.b===k;break;case'wide':win=[key2(s.a,s.b),key2(s.a,s.c),key2(s.b,s.c)].includes(k);break;case'trio':win=key3(s.a,s.b,s.c)===k;break;case'trifecta':win=[s.a,s.b,s.c].join('-')===k;break;}if(win){hits++;payout+=t.amt*t.odds;}}
+ if(hits)any+=s.v;if(hits>1)multi+=s.v;if(payout>total+1e-8)profit+=s.v;mean+=s.v*payout;m2+=s.v*payout*payout;maxLoss=Math.max(maxLoss,total-payout);const wealth=bank-total+payout;if(wealth<=0)validLog=false;else if(validLog)logGrowth+=s.v*Math.log(wealth/bank);
+ }return {any,profit,multi,mean,sd:Math.sqrt(Math.max(0,m2-mean*mean)),maxLoss,logGrowth:validLog?logGrowth:null};}
+function renderAll(){if(!state.model)return;renderMode();renderBasket();}
+function selectMode(m){if(!NAMES[m])return;if(state.model)record().texts[state.mode]=$('oddsInput').value;state.mode=m;if(state.model){$('oddsInput').value=record().texts[m]||'';renderMode();}save();}
+function parseOddsInput(text,m,r){
+ if(m==='win'||m==='place'){
+  const out={};const lines=text.replace(/\r/g,'').split('\n').map(cleanLine);const errors=[];
+  for(let i=0;i<lines.length;i++){const l=lines[i];if(!l||!/^\d{1,2}(?:\s|$)/.test(l))continue;
+   const a=l.match(/^(\d{1,2})\s+(.+)$/);if(!a)continue;const key=String(Number(a[1]));
+   if(!r.horses.some(h=>h.num===+key))continue;const odd=parseOddsValue(a[2]);
+   if(!odd){errors.push(i+1);continue;}out[key]=odd;
+  }
+  if(errors.length)throw Error('単勝/複勝オッズを読めない行があります：'+errors.join(','));
+  if(!Object.keys(out).length)throw Error('「1 5.6」の形式で入力してください。');return out;
+ }
+ // JRAのフォーメーション表示は「12＝1-2」「110＝1-10」の連結馬番。
+ // 枠連だけは同枠(1-1等)も有効。三連単は着順を保持する。
+ const c=extractContext(text);
+ if(c.type&&c.type!==NAMES[m]&&!(m==='trifecta'&&c.type==='三連単'))
+  throw Error(`貼り付けたオッズは「${c.type}」です。現在選択中の券種「${NAMES[m]}」と異なります。`);
+ if(c.location&&r.track&&!String(r.track).includes(c.location))throw Error(`競馬場が一致しません：貼り付け${c.location}／CSV ${r.track}`);
+ if(c.race!==null&&r.race&&Number(String(r.race).match(/\d+/)?.[0])!==c.race)throw Error(`レース番号が一致しません：貼り付け${c.race}R／CSV ${r.race}`);
+ const allowed=new Set((state.tickets[m]||[]).map(t=>t.key));
+ const horseNumbers=m==='bracket'?Array.from({length:8},(_,i)=>({num:i+1})):r.horses;
+ const out={},bad=[],duplicates=[],recognized=[];
+ const rawLines=text.replace(/\r/g,'').split('\n');
+ function accept(raw,rawOdd,lineNo){
+  const ticket=decodeJRACombo(raw,m,horseNumbers);
+  if(ticket.error){bad.push(`${lineNo}行目 ${raw}：${ticket.error}`);return;}
+  if(!allowed.has(ticket.key)){bad.push(`${lineNo}行目 ${raw}：CSV出走馬に該当しません`);return;}
+  const odd=parseOddsValue(rawOdd);
+  if(!odd){bad.push(`${lineNo}行目 ${raw}：オッズの数値が不正です`);return;}
+  if(out[ticket.key]){
+   if(out[ticket.key].lo!==odd.lo||out[ticket.key].hi!==odd.hi)duplicates.push(`${lineNo}行目 ${raw}`);
+   return;
+  }
+  out[ticket.key]=odd;recognized.push(ticket.key);
+ }
+ for(let i=0;i<rawLines.length;i++){
+  const raw=rawLines[i].normalize('NFKC').trim();
+  // Markdown表： |110|403.1-412.3| や「110 | 403.1-412.3」
+  const tabular=raw.match(/^\|?\s*(\d{1,6}(?:\s*[-→>]\s*\d{1,2}){0,2})\s*\|\s*(\d+(?:\.\d+)?\s*(?:[-〜～~]\s*\d+(?:\.\d+)?)?)\s*\|?\s*$/);
+  if(tabular){accept(tabular[1].replace(/\s/g,''),tabular[2],i+1);continue;}
+  const line=cleanLine(raw);
+  // JRAプレーンテキスト：「110 403.1-412.3」「1-10 403.1-412.3」
+  const combo=extractCombo(line,m);
+  if(!combo)continue;
+  const norm=combo.raw;
+  // オッズが次行になる表示にも対応
+  let oddsText=combo.rest;
+  if(!parseOddsValue(oddsText)){
+   const following=rawLines[i+1]?.normalize('NFKC').trim()||'';
+   if(/^\d+(?:\.\d+)?(?:\s*[-〜～~]\s*\d+(?:\.\d+)?)?$/.test(following)){
+    oddsText=following;i++;
+   } else continue; // ナビ・出馬表など、組み合わせと確認できない数字は無視
+  }
+  accept(norm,oddsText,i+1);
+ }
+ if(duplicates.length)throw Error('同じ買い目に異なるオッズが含まれています：'+duplicates.slice(0,5).join('、'));
+ if(bad.length)throw Error(`JRAオッズを安全に読み取れませんでした（正常${recognized.length}組）。\n${bad.slice(0,6).join('\n')}`);
+ if(!recognized.length)throw Error('組合せとオッズを読み取れませんでした。ワイドの「組合せ｜オッズ」表を含めてコピーしてください。');
+ // JRAの105点等の全組合せ表は、途中の欠落を見落とさないよう警告を表示する。
+ if(m==='wide'&&/組合せ数\s*(\d+)\s*点/.test(text)){
+  const expected=Number(text.match(/組合せ数\s*(\d+)\s*点/)[1]);
+  if(recognized.length!==expected)throw Error(`組合せ数は${expected}点ですが${recognized.length}点しか読めません。入力を確認してください。`);
+ }
+ return out;
+}
+function decodeJRACombo(raw,mode,horses){
+ // 通常の連結馬番を全列挙で一意に復元し、曖昧な馬番は推測しない。
+ if(mode!=='bracket')return numFromTicket(raw,mode,horses);
+ let nums;
+ if(/[-→>]/.test(raw))nums=raw.split(/\s*[-→>]\s*/).map(Number);
+ else{
+  const solutions=[];for(let a=1;a<=8;a++)for(let b=a;b<=8;b++)if(''+a+b===raw)solutions.push([a,b]);
+  if(solutions.length!==1)return {error:'枠番を一意に特定できません'};
+  nums=solutions[0];
+ }
+ if(nums.length!==2||nums.some(x=>!Number.isInteger(x)||x<1||x>8))return {error:'枠番が不正です'};
+ nums.sort((a,b)=>a-b);return {key:nums.join('-')};
+}
+function setOddValue(key,text){const rec=record(),m=state.mode;if(!text.trim()){delete rec.odds[m][key];}else{const odd=parseOddsValue(text);if(!odd||!/^[\d.,\s〜～~\-]+$/.test(text)){status('oddsStatus','オッズが不正です。入力値を維持しています。',true);renderMode();return;}rec.odds[m][key]=odd;}save();renderAll();}
+function exportCSV(rows,filename){const content='\uFEFF'+rows.map(row=>row.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(content,filename,'text/csv;charset=utf-8');}
+function downloadBlob(data,filename,type){const url=URL.createObjectURL(new Blob([data],{type}));const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+function backup(){downloadBlob(JSON.stringify({version:2,perRace:state.perRace,bankroll:$('bankroll').value},null,2),'keiba_ai_backup.json','application/json');}
+
+function frameMerge(text,races){const rows=csvCells(text.replace(/^\uFEFF/,''));if(!rows.length)return;const header=rows[0],fi=col(header,['枠番','枠','frame','frame_number']);if(fi<0)return;const ni=col(header,['馬番','馬番号','umaban','horse_number','horseno','number','num']);const tracki=col(header,['競馬場','場名','開催','開催場','track','venue','場所']),ri=col(header,['レース','レース番号','競走番号','R','race','race_number','raceNo','raceno']),di=col(header,['日付','開催日','年月日','date','race_date']),ti=col(header,['レース名','競走名','race_name','racename']);if(ni<0)return;const lookup=new Map();for(const a of rows.slice(1)){const k=JSON.stringify([di<0?'':(a[di]||'').trim(),tracki<0?'':(a[tracki]||'').trim(),ri<0?'':(a[ri]||'').trim(),ti<0?'':(a[ti]||'').trim()]);const no=Number(a[ni]),fr=Number(a[fi]);if(Number.isInteger(no)&&Number.isInteger(fr)&&fr>=1&&fr<=8)lookup.set(k+'#'+no,fr);}for(const r of races){const key=JSON.stringify([r.date,r.track,r.race,r.title]);for(const h of r.horses)h.frame=lookup.get(key+'#'+h.num)||null;}}
+const _loadCSV=loadCSV;loadCSV=function(text,name='CSV'){try{const races=parseCSV(text);frameMerge(text,races);state.races=races;state.sourceName=name;state.raceIndex=0;fillRaceSelect();prepareRace();status('csvStatus',`${name} / ${state.races.length}レース、${sum(state.races.map(r=>r.horses.length))}頭を読み込みました。買い目は券種切替後も保存されます。`,false,true);}catch(e){state.races=[];state.model=null;fillRaceSelect();setPanels(false);status('csvStatus',e.message,true);}};
+$('csvFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{loadCSV(await readCSVFile(f),f.name);}catch(err){status('csvStatus',err.message,true);}e.target.value='';});
+$('demoBtn').addEventListener('click',()=>loadCSV('競馬場,レース,馬番,枠番,馬名,AI単勝勝率\n東京,7,1,1,A,27\n東京,7,2,2,B,22\n東京,7,3,3,C,17\n東京,7,4,4,D,12\n東京,7,5,5,E,9\n東京,7,6,6,F,7\n東京,7,7,7,G,4\n東京,7,8,8,H,2','サンプルCSV（架空データ）'));
+$('raceSelect').addEventListener('change',e=>{record().texts[state.mode]=$('oddsInput').value;state.raceIndex=+e.target.value;prepareRace();status('csvStatus',`分析レースを切替：${state.races[state.raceIndex].label}。各レースのオッズと買い目は別々に保持します。`,false,true);save();});
+document.querySelectorAll('#tabs button').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));
+$('oddsInput').addEventListener('input',()=>{if(record()){record().texts[state.mode]=$('oddsInput').value;save();}});
+$('importSavedJraOdds').addEventListener('click',()=>{
+ status('oddsStatus','Firefox＋Tampermonkeyの連携スクリプトを確認しています。連携未設定の場合はJRAオッズを従来どおり貼り付けてください。');
+ window.dispatchEvent(new CustomEvent('keiba-ai:import-saved-jra'));
+});
+$('parseOddsBtn').addEventListener('click',()=>{if(!state.model)return;try{const rec=record(),m=state.mode,parsed=parseOddsInput($('oddsInput').value,m,state.races[state.raceIndex]);rec.odds[m]={...rec.odds[m],...parsed};rec.texts[m]=$('oddsInput').value;status('oddsStatus',`${NAMES[m]}：${Object.keys(parsed).length}点を追加・更新。既存の他券種オッズと買い目は保持しました。`,false,true);save();renderAll();$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){status('oddsStatus',e.message,true);}});
+$('clearOddsBtn').addEventListener('click',()=>{if(!state.model)return;const rec=record(),m=state.mode;rec.odds[m]={};rec.texts[m]='';$('oddsInput').value='';for(const id of Object.keys(rec.chosen))if(id.startsWith(m+':')){delete rec.chosen[id];delete rec.amount[id];}status('oddsStatus',`${NAMES[m]}のオッズと、その券種の候補のみ解除しました。`);save();renderAll();});
+$('positiveOnly').addEventListener('change',e=>{state.positive=e.target.checked;renderMode();});$('sortSelect').addEventListener('change',e=>{state.sort=e.target.value;renderMode();});$('filterSelect').addEventListener('change',e=>{state.filter=e.target.value;renderMode();});
+$('evRows').addEventListener('change',e=>{const el=e.target;if(el.dataset.check){const rec=record(),id=ticketKey(state.mode,el.dataset.check);if(el.checked){rec.chosen[id]=true;if(!(id in rec.amount))rec.amount[id]=100;}else{delete rec.chosen[id];delete rec.amount[id];}save();renderAll();}});
+$('basketRows').addEventListener('change',e=>{const el=e.target;if(!el.dataset.amt)return;const n=Number(el.value);if(!Number.isInteger(n)||n<0||n%100!==0){status('riskStatus','購入金額は0円以上・100円単位で入力してください。',true);renderBasket();return;}record().amount[el.dataset.amt]=n;save();renderBasket();});
+$('basketRows').addEventListener('click',e=>{const id=e.target.dataset.remove;if(!id)return;delete record().chosen[id];delete record().amount[id];save();renderAll();});
+$('bankroll').addEventListener('change',()=>{save();renderBasket();});$('applyBatch').addEventListener('click',()=>{const n=Number($('batchAmt').value);if(!Number.isInteger(n)||n<0||n%100!==0){alert('100円単位の金額を指定してください。');return;}for(const x of basketTickets())record().amount[x.id]=n;save();renderBasket();});
+$('riskRecalc').addEventListener('click',renderBasket);$('clearBasket').addEventListener('click',()=>{if(!confirm('このレースの全購入候補を解除しますか？'))return;record().chosen={};record().amount={};save();renderAll();});
+$('gotoBasket').addEventListener('click',()=>$('basketSection').scrollIntoView({behavior:'smooth'}));
+$('evCsvBtn').addEventListener('click',()=>{if(!state.model)return;const r=state.races[state.raceIndex],data=[['レース','券種','買い目','的中確率(%)','オッズ下限','オッズ上限','期待回収率(%)','損益分岐オッズ','区分'],...curRows().map(x=>[r.label,NAMES[state.mode],x.key,fmt(x.p*100,8),x.odd??'',x.hi??'',x.ev===null?'':fmt(x.ev,5),fmt(x.breakEven,5),x.cat])];exportCSV(data,'keiba_EV_'+state.mode+'.csv');});
+$('basketCsvBtn').addEventListener('click',()=>{if(!state.model)return;const data=[['レース','券種','買い目','的中確率(%)','オッズ下限','期待回収率(%)','金額(円)'],...basketTickets().map(x=>[state.races[state.raceIndex].label,NAMES[x.m],x.key,fmt(x.p*100,8),x.odds,fmt(x.p*x.odds*100,4),x.amt])];exportCSV(data,'keiba_selected_tickets.csv');});
+$('probFold').addEventListener('toggle',()=>{if(state.model&&$('probFold').open)renderV25Result();});
+$('selectPositive').addEventListener('click',()=>{if(!state.model)return;const rec=record(),m=state.mode;let changed=0;for(const t of curRows()){if(t.odd!==null&&t.ev>100){const id=ticketKey(m,t.key);if(!rec.chosen[id]){rec.chosen[id]=true;rec.amount[id]=100;changed++;}}}save();renderAll();status('oddsStatus',`${NAMES[m]}：プラス期待値候補を${changed}点追加しました。`,false,true);});
+$('selectClear').addEventListener('click',()=>{const rec=record(),m=state.mode;for(const id of Object.keys(rec.chosen))if(id.startsWith(m+':')){delete rec.chosen[id];delete rec.amount[id];}save();renderAll();});
+$('jumpSaved').addEventListener('click',()=>$('basketSection').scrollIntoView({behavior:'smooth'}));
+$('backupBtn').addEventListener('click',backup);
+$('restoreFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!d.perRace||typeof d.perRace!=='object')throw Error('保存形式が違います');state.perRace=d.perRace;if(d.bankroll)$('bankroll').value=d.bankroll;save();if(state.model){$('oddsInput').value=record().texts[state.mode]||'';renderAll();}status('csvStatus','バックアップを復元しました。CSVを再読み込みすると保存されたレースに対応します。',false,true);}catch(err){status('csvStatus','復元失敗：'+err.message,true);}e.target.value='';});
+$('resetBtn').addEventListener('click',()=>{if(!confirm('保存済みの全レースの買い目とオッズを消去します。よろしいですか？'))return;state.perRace={};localStorage.removeItem(STORE);state.races=[];state.model=null;fillRaceSelect();setPanels(false);status('csvStatus','全データを消去しました。');});
+loadStored();fillRaceSelect();
+</script></body></html>
