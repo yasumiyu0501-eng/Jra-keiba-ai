@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         JRA → 競馬AI オッズ連携（Android Firefox）
 // @namespace    local.keiba.ai.bridge
-// @version      0.4
-// @description  JRA単勝・複勝・馬連オッズ連携
+// @version      0.5
+// @description  JRA単勝・複勝・馬連・ワイド取得
 // @match        https://www.jra.go.jp/*
 // @match        https://jra.go.jp/*
 // @match        https://app.jra.jp/*
@@ -54,32 +54,50 @@ function extractWinPlace(){
   count:best.length
  };
 }
-function extractUmaren(text){
- const heading='馬連オッズ(馬番順)';
- const normalized=text.normalize('NFKC').replace(/（/g,'(').replace(/）/g,')');
- const pos=normalized.lastIndexOf(heading);
- if(pos<0)throw Error('馬連オッズ(馬番順)を開いてください');
- const after=normalized.slice(pos+heading.length);
- const section=after.split(/(?:・\s*オッズの強調表示|開催選択へ戻る|ページトップへ戻る)/)[0];
- const lines=section.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
- let base=null;
+function extractPairs(text,type){
+ const title=type==='wide'?'ワイドオッズ(馬番順)':'馬連オッズ(馬番順)';
+ const norm=text.normalize('NFKC').replace(/（/g,'(').replace(/）/g,')');
+ const pos=norm.lastIndexOf(title);
+ if(pos<0)throw Error('JRAの'+title+'画面を開いてください');
+ const rest=norm.slice(pos+title.length);
+ const section=rest.split(/(?:・\s*(?:オッズの強調表示|発売締切直後)|開催選択へ戻る|ページトップへ戻る)/)[0];
+ const tokens=section.match(/\d+(?:\.\d+)?|[-−–〜~]/g)||[];
  const map=new Map();
- for(const line of lines){
-  const header=line.match(/^(\d{1,2})$/);
-  if(header){base=Number(header[1]);continue;}
-  const pair=line.match(/^(\d{1,2})\s+(\d+(?:\.\d+)?)$/);
-  if(!pair||base===null)continue;
-  const b=Number(pair[1]),o=Number(pair[2]);
-  if(base<1||base>18||b<=base||b>18||o<1)throw Error('馬連の馬番・オッズが不正です');
-  const k=base+'-'+b;
-  if(map.has(k))throw Error('馬連の重複: '+k);
-  map.set(k,o);
+ let p=0,n=0;
+ const num=()=>Number(tokens[p]);
+ const range=()=>{
+  const lo=num();p++;
+  if(tokens[p]!=='-'&&tokens[p]!=='−'&&tokens[p]!=='–'&&tokens[p]!=='〜'&&tokens[p]!=='~')throw Error('オッズの区切りを認識できません');
+  p++;
+  const hi=num();p++;
+  if(!Number.isFinite(lo)||!Number.isFinite(hi)||lo<1||hi<lo)throw Error('ワイド上下限が不正です');
+  return lo+'-'+hi;
+ };
+ for(let base=1;base<=18&&p<tokens.length;base++){
+  if(num()!==base||!Number.isInteger(num()))throw Error('基準馬番が不正です: '+base);
+  p++;
+  let cnt=0;
+  for(let j=base+1;j<=18&&p<tokens.length;j++){
+   if(num()!==j)break;
+   p++;
+   let value;
+   if(type==='wide')value=range();
+   else{
+    value=num();p++;
+    if(!Number.isFinite(value)||value<1)throw Error('馬連オッズが不正です');
+   }
+   const k=base+'-'+j;
+   if(map.has(k))throw Error('組み合わせ重複: '+k);
+   map.set(k,value);
+   cnt++;
+   n=Math.max(n,j);
+  }
+  if(!cnt)throw Error(base+'番の組み合わせがありません');
  }
- const count=map.size;
- const horseCount=Math.max(0,...[...map.keys()].flatMap(x=>x.split('-').map(Number)));
- const expected=horseCount*(horseCount-1)/2;
- if(horseCount<3||count!==expected)throw Error('馬連の件数不一致: '+count+'点 / 想定'+expected+'点。途中欠落の可能性があります');
- return {umaren:[...map].map(([k,o])=>k+' '+o).join('\n'),count,horseCount};
+ if(p!==tokens.length)throw Error('未解析データが残っています');
+ const expected=n*(n-1)/2;
+ if(n<3||map.size!==expected)throw Error('組み合わせ件数不一致: '+map.size+'/'+expected);
+ return {[type]:[...map].map(([k,v])=>k+' '+v).join('\n'),count:map.size,horseCount:n};
 }
 if(isJra){
  const b=document.createElement('button');
@@ -88,13 +106,14 @@ if(isJra){
  b.onclick=()=>{
   try{
    const text=document.body.innerText||'';
+   const isWide=/ワイドオッズ\s*[（(]馬番順[）)]/.test(text);
    const isPair=/馬連オッズ\s*[（(]馬番順[）)]/.test(text);
    const info=raceInfo(text);
    if(!info)throw Error('開催日・競馬場・レース番号を確認できません');
-   const data=isPair?extractUmaren(text):extractWinPlace();
-   const type=isPair?'umaren':'winplace';
+   const type=isWide?'wide':isPair?'umaren':'winplace';
+   const data=isWide?extractPairs(text,'wide'):isPair?extractPairs(text,'umaren'):extractWinPlace();
    GM_setValue(key,{...data,type,info,url:location.href,savedAt:new Date().toISOString()});
-   alert((type==='umaren'?'馬連 '+data.count+'点':'単勝・複勝 '+data.count+'頭')+'を保存しました。\n'+info.date+' '+info.track+info.race+'R');
+   alert((type==='wide'?'ワイド ':type==='umaren'?'馬連 ':'単勝・複勝 ')+data.count+(type==='winplace'?'頭':'点')+'を保存しました。\n'+info.date+' '+info.track+info.race+'R');
   }catch(e){alert('保存できません: '+e.message);}
  };
  document.body.appendChild(b);
@@ -106,20 +125,18 @@ if(isApp){
   const mode=document.querySelector('#tabs button.active')?.dataset.mode;
   if(!data){alert('保存データがありません');return;}
   if(!area||!read||read.disabled){alert('先にAI勝率CSVと券種を選択してください');return;}
-  let text=data[mode];
+  const text=data[mode];
   if(!text){alert('保存データにこの券種はありません。JRAで保存し直してください');return;}
   const label=document.querySelector('#raceSelect')?.selectedOptions[0]?.textContent||'';
-  if(data.info){
-   const date=label.match(/20\d{2}[\/-]\d{1,2}[\/-]\d{1,2}/)?.[0]?.replace(/\//g,'-');
-   const track=data.info.track,number=data.info.race;
-   const rm=label.match(/(\d{1,2})\s*R/i);
-   if(!date||!rm){alert('分析レースを識別できないため取り込みを停止しました');return;}
-   const d=date.split('-').map((v,i)=>i?String(Number(v)).padStart(2,'0'):v).join('-');
-   if(d!==data.info.date||!label.includes(track)||Number(rm[1])!==number){
-    alert('レース不一致のため停止しました。\nJRA: '+data.info.date+' '+track+number+'R\nアプリ: '+label);
-    return;
-   }
-  }else{alert('レース識別情報がありません。保存し直してください');return;}
+  if(!data.info){alert('レース識別情報がありません。保存し直してください');return;}
+  const date=label.match(/20\d{2}[\/-]\d{1,2}[\/-]\d{1,2}/)?.[0]?.replace(/\//g,'-');
+  const rm=label.match(/(\d{1,2})\s*R/i);
+  if(!date||!rm){alert('分析レースを識別できないため取り込みを停止しました');return;}
+  const d=date.split('-').map((v,i)=>i?String(Number(v)).padStart(2,'0'):v).join('-');
+  if(d!==data.info.date||!label.includes(data.info.track)||Number(rm[1])!==data.info.race){
+   alert('レース不一致のため停止しました。\nJRA: '+data.info.date+' '+data.info.track+data.info.race+'R\nアプリ: '+label);
+   return;
+  }
   if(!confirm('保存オッズを取り込みます。\n'+data.info.date+' '+data.info.track+data.info.race+'R\n取得 '+data.count+'件'))return;
   area.value=text;
   area.dispatchEvent(new Event('input',{bubbles:true}));
