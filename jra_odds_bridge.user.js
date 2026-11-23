@@ -2,8 +2,8 @@
 // ==UserScript==
 // @name         JRA → 競馬AI オッズ連携（Android Firefox）
 // @namespace    local.keiba.ai.bridge
-// @version      0.7
-// @description  単勝・複勝・馬連・ワイド・馬単・三連複
+// @version      0.8
+// @description  単勝・複勝・馬連・ワイド・馬単・三連複・三連単
 // @match        https://www.jra.go.jp/*
 // @match        https://jra.go.jp/*
 // @match        https://app.jra.jp/*
@@ -145,6 +145,66 @@ function sanrenpuku(text){
  const n=matches[0];
  return {sanrenpuku:[...found].map(([k,v])=>k+' '+v).join('\n'),count:found.size,horseCount:n};
 }
+function sanrentan(text){
+ const norm=text.normalize('NFKC');
+ const title='3連単オッズ(馬番順)';
+ const start=norm.lastIndexOf(title);
+ if(start<0)throw Error('3連単オッズ(馬番順)を開いてください');
+ const s=norm.slice(start+title.length).split(/(?:・\s*(?:オッズの強調表示|発売締切直後|特定の馬番)|開催選択へ戻る)/)[0];
+ const lines=s.split(/\r?\n/).map(clean).filter(Boolean);
+ const found=new Map();
+ let a=null,b=null,active=false,blocks=0,blockCount=0;
+ function closeBlock(){
+  if(active && blockCount<1)throw Error('三連単の空の組み合わせ表があります');
+ }
+ for(const line of lines){
+  let m=line.match(/^1着\s*(\d{1,2})$/);
+  if(m){closeBlock();a=+m[1];b=null;active=false;continue;}
+  m=line.match(/^2着\s*(\d{1,2})$/);
+  if(m){
+   if(a===null)throw Error('三連単の1着欄がありません');
+   b=+m[1];if(a===b||a<1||b<1||a>18||b>18)throw Error('三連単の1・2着馬番が不正です');
+   continue;
+  }
+  if(line==='3着'){
+   if(a===null||b===null)throw Error('三連単の着順見出しが不完全です');
+   active=true;blocks++;blockCount=0;continue;
+  }
+  if(!active)continue;
+  m=line.match(/^(\d{1,2})\s+(\d+(?:\.\d+)?)$/);
+  if(m){
+   const c=+m[1],o=+m[2];
+   if(c===a||c===b||c<1||c>18||o<1)throw Error('三連単の3着馬番・オッズが不正です');
+   const k=a+'-'+b+'-'+c;
+   if(found.has(k))throw Error('三連単の重複: '+k);
+   found.set(k,m[2]);blockCount++;
+  }else if(/^\d{1,2}$/.test(line)){
+   const c=+line;
+   if(c!==a&&c!==b)throw Error('三連単オッズが欠落しています: '+a+'-'+b+'-'+c);
+  }else if(line==='ページトップへ戻る'||/^\d{1,2}\s+\S/.test(line)){
+   // 馬名見出し・ページ内ナビゲーション
+  }else if(/^\d/.test(line)){
+   throw Error('三連単の未解析行: '+line);
+  }
+ }
+ closeBlock();
+ const matches=[];
+ for(let n=3;n<=18;n++){
+  if(found.size!==n*(n-1)*(n-2)||blocks!==n*(n-1))continue;
+  let ok=true;
+  for(let i=1;i<=n&&ok;i++)for(let j=1;j<=n&&ok;j++){
+   if(i===j)continue;
+   for(let k=1;k<=n;k++){
+    if(k===i||k===j)continue;
+    if(!found.has(i+'-'+j+'-'+k)){ok=false;break;}
+   }
+  }
+  if(ok)matches.push(n);
+ }
+ if(matches.length!==1)throw Error('三連単の件数・欠損検証に失敗: '+found.size+'点 / '+blocks+'表');
+ const n=matches[0];
+ return {sanrentan:[...found].map(([k,v])=>k+' '+v).join('\n'),count:found.size,horseCount:n};
+}
 if(isJra){
  const b=document.createElement('button');
  b.type='button';b.textContent='このJRAオッズを保存';
@@ -152,14 +212,15 @@ if(isJra){
  b.onclick=()=>{
   try{
    const text=document.body.innerText||'';
-   const type=/3連複オッズ\s*[（(]馬番順[）)]/.test(text)?'sanrenpuku':
+   const type=/3連単オッズ\s*[（(]馬番順[）)]/.test(text)?'sanrentan':
+    /3連複オッズ\s*[（(]馬番順[）)]/.test(text)?'sanrenpuku':
     /馬単オッズ\s*[（(]馬番順[）)]/.test(text)?'umatan':
     /ワイドオッズ\s*[（(]馬番順[）)]/.test(text)?'wide':
     /馬連オッズ\s*[（(]馬番順[）)]/.test(text)?'umaren':'winplace';
    const info=raceInfo(text);if(!info)throw Error('レース情報を特定できません');
-   const data=type==='sanrenpuku'?sanrenpuku(text):type==='umatan'?umatan(text):type==='winplace'?winPlace():pairs(text,type);
+   const data=type==='sanrentan'?sanrentan(text):type==='sanrenpuku'?sanrenpuku(text):type==='umatan'?umatan(text):type==='winplace'?winPlace():pairs(text,type);
    GM_setValue(key,{...data,type,info,url:location.href,savedAt:new Date().toISOString()});
-   const name={sanrenpuku:'三連複 ',umatan:'馬単 ',wide:'ワイド ',umaren:'馬連 ',winplace:'単勝・複勝 '}[type];
+   const name={sanrentan:'三連単 ',sanrenpuku:'三連複 ',umatan:'馬単 ',wide:'ワイド ',umaren:'馬連 ',winplace:'単勝・複勝 '}[type];
    alert(name+data.count+(type==='winplace'?'頭':'点')+'を保存しました。\n'+info.date+' '+info.track+info.race+'R');
   }catch(e){alert('保存できません: '+e.message);}
  };
@@ -173,6 +234,7 @@ if(isApp){
   let mode=tab?.dataset.mode;
   if(!data){alert('保存データがありません');return;}
   if(!area||!read||read.disabled){alert('先にAI勝率CSVと券種を選択してください');return;}
+  if(mode==='trifecta'||/3連単|三連単/.test(tab?.textContent||''))mode='sanrentan';
   if(['trio','3renpuku','3renfuku','sanrenfuku','3連複'].includes(mode)||/3連複|三連複/.test(tab?.textContent||''))mode='sanrenpuku';
   const oddsText=data[mode];
   if(!oddsText){alert('この券種の保存データがありません。JRAで保存し直してください');return;}
