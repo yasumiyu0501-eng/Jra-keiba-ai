@@ -380,7 +380,7 @@ function wakuren(text){
  const colors=['白','黒','赤','青','黄','緑','橙','桃'];
 
  for(const line of lines){
-  const h=line.match(/^枠([1-8])([白黒赤青黄緑橙桃])$/);
+  co
   if(h){
    current=+h[1];
    if(colors[current-1]!==h[2])
@@ -389,8 +389,7 @@ function wakuren(text){
     throw Error('枠見出しの重複: '+current);
    headers.add(current);
    continue;
-  }
-
+  const h=line.match(/^枠\s*([1-8])\s*([白黒赤青黄緑橙桃])$/);
   const m=line.match(/^([1-8])\s+(\d+(?:\.\d+)?)$/);
   if(m&&current){
    const other=+m[1],o=+m[2];
